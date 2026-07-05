@@ -143,16 +143,18 @@ const Projects = () => {
           <div className="projects-header__text">
             <span className="eyebrow">Workspace</span>
             <h1>Projects</h1>
-          </div>
-          <button
+        </div>
+        {projects.length > 0 && (
+            <button
             className="btn-primary"
             onClick={() => {
-              setShowForm(!showForm);
-              if (showForm) handleCancel();
+                setShowForm(!showForm);
+                if (showForm) handleCancel();
             }}
-          >
+            >
             {showForm ? "Cancel" : "+ New project"}
-          </button>
+            </button>
+        )}
         </div>
 
         {projects.length > 0 && (

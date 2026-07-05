@@ -250,29 +250,31 @@ const Tasks = () => {
         <div className="tasks-header">
           <div className="tasks-header__back">
             <button
-              className="btn-back"
-              onClick={() => navigate("/projects")}
-              title="Back to projects"
+            className="btn-back"
+            onClick={() => navigate("/projects")}
+            title="Back to projects"
             >
-              ← Projects
+            ← Projects
             </button>
             <div className="tasks-header__text">
-              <span className="eyebrow">Project tasks</span>
-              <h1>{project?.title || "Project"}</h1>
-              {project?.description && (
+            <span className="eyebrow">Project tasks</span>
+            <h1>{project?.title || "Project"}</h1>
+            {project?.description && (
                 <p className="project-description-text">{project.description}</p>
-              )}
+            )}
             </div>
-          </div>
-          <button
+        </div>
+        {tasks.length > 0 && (
+            <button
             className="btn-primary"
             onClick={() => {
-              setShowForm(!showForm);
-              if (showForm) handleCancel();
+                setShowForm(!showForm);
+                if (showForm) handleCancel();
             }}
-          >
+            >
             {showForm ? "Cancel" : "+ New task"}
-          </button>
+            </button>
+        )}
         </div>
 
         {error && (
