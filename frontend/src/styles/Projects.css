@@ -374,6 +374,30 @@
   border-top: 1px solid var(--border);
 }
 
+.project-footer {
+  margin-top: 18px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.btn-tasks {
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: #08080d;
+  background: linear-gradient(135deg, #7c5cff, #22d3ee);
+  transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.btn-tasks:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(124,92,255,.35);
+}
+
 /* Responsive */
 @media (max-width: 600px) {
   .projects-container {

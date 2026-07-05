@@ -143,7 +143,6 @@ const Projects = () => {
           <div className="projects-header__text">
             <span className="eyebrow">Workspace</span>
             <h1>Projects</h1>
-            {user && <p className="welcome-text">Welcome back, {user.name || user.email}</p>}
           </div>
           <button
             className="btn-primary"
@@ -160,13 +159,7 @@ const Projects = () => {
           <div className="stats-row">
             <div className="stat-pill">
               <span className="stat-pill__value">{projects.length}</span>
-              <span className="stat-pill__label">Total</span>
-            </div>
-            <div className="stat-pill">
-              <span className="stat-pill__value">
-                {projects.filter((p) => p.description).length}
-              </span>
-              <span className="stat-pill__label">With notes</span>
+              <span className="stat-pill__label">Total Projects</span>
             </div>
           </div>
         )}
@@ -237,8 +230,6 @@ const Projects = () => {
                 <div
                   key={id}
                   className="project-card"
-                  onClick={() => navigate(`/projects/${id}`)}
-                  style={{ cursor: "pointer" }}
                 >
                   <div className="project-card-header">
                     <div
@@ -277,6 +268,15 @@ const Projects = () => {
                   {project.description && (
                     <p className="project-description">{project.description}</p>
                   )}
+
+                  <div className="project-footer">
+                    <button
+                        className="btn-tasks"
+                        onClick={() => navigate(`/projects/${id}`)}
+                    >
+                        View Tasks
+                    </button>
+                  </div>
 
                   {project.createdAt && (
                     <small className="project-meta">

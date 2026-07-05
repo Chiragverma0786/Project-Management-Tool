@@ -8,7 +8,7 @@ import { getProjectById } from "../api/projectApi";
 import "../styles/Tasks.css";
 
 const TASK_STATUSES = ["todo", "in-progress", "done"];
-const TASK_PRIORITIES = ["Low", "Medium", "High"];
+const TASK_PRIORITIES = ["low", "medium", "high"];
 
 const formatStatus = (status) => {
   const statusMap = {
@@ -17,6 +17,31 @@ const formatStatus = (status) => {
     "done": "Done",
   };
   return statusMap[status] || status;
+};
+
+const formatPriority = (status) => {
+  const priorityMap = {
+    "low": "Low",
+    "medium": "Medium",
+    "high": "High",
+  };
+  return priorityMap[status] || status;
+};
+
+const getPriorityClass = (priority) => {
+  switch (priority?.toLowerCase()) {
+    case "low":
+      return "priority-low";
+
+    case "medium":
+      return "priority-medium";
+
+    case "high":
+      return "priority-high";
+
+    default:
+      return "priority-default";
+  }
 };
 
 const Tasks = () => {
@@ -34,7 +59,7 @@ const Tasks = () => {
     title: "",
     description: "",
     status: "todo",
-    priority: "Medium",
+    priority: "low",
   });
 
   useEffect(() => {
@@ -92,8 +117,8 @@ const Tasks = () => {
       setFormData({
         title: "",
         description: "",
-        status: "To Do",
-        priority: "Medium",
+        status: "todo",
+        priority: "medium",
       });
       setEditingId(null);
       setShowForm(false);
@@ -111,7 +136,7 @@ const Tasks = () => {
       title: task.title,
       description: task.description || "",
       status: task.status || "todo",
-      priority: task.priority || "Medium",
+      priority: task.priority || "medium",
     });
     setEditingId(task.id || task._id);
     setShowForm(true);
@@ -140,7 +165,7 @@ const Tasks = () => {
       title: "",
       description: "",
       status: "todo",
-      priority: "Medium",
+      priority: "medium",
     });
     setEditingId(null);
     setShowForm(false);
@@ -164,8 +189,27 @@ const Tasks = () => {
     }
   };
 
-  if (authLoading || !project) {
-    return <Loader />;
+  // Show loading state with navbar, not white screen
+  if (authLoading) {
+    return (
+      <div className="tasks-page">
+        <Navbar />
+        <div className="tasks-container">
+          <Loader />
+        </div>
+      </div>
+    );
+  }
+
+  if (!project) {
+    return (
+      <div className="tasks-page">
+        <Navbar />
+        <div className="tasks-container">
+          <Loader />
+        </div>
+      </div>
+    );
   }
 
   const tasksByStatus = TASK_STATUSES.reduce((acc, status) => {
@@ -188,11 +232,11 @@ const Tasks = () => {
 
   const getPriorityColor = (priority) => {
     switch (priority) {
-      case "High":
+      case "high":
         return "#f87171";
-      case "Medium":
+      case "medium":
         return "#f59e0b";
-      case "Low":
+      case "low":
         return "#34d399";
       default:
         return "#8b8b96";
@@ -293,7 +337,7 @@ const Tasks = () => {
                 >
                   {TASK_PRIORITIES.map((priority) => (
                     <option key={priority} value={priority}>
-                      {priority}
+                      {formatPriority(priority)}
                     </option>
                   ))}
                 </select>
@@ -323,73 +367,58 @@ const Tasks = () => {
             </button>
           </div>
         ) : (
-          <div className="tasks-board">
-            {TASK_STATUSES.map((status) => (
-              <div key={status} className="task-column">
-                <div className="column-header">
-                  <h3 className="column-title">{formatStatus(status)}</h3>
-                  <span
-                    className="column-count"
-                    style={{ backgroundColor: getStatusColor(status) }}
-                  >
-                    {tasksByStatus[status].length}
-                  </span>
+          <div className="tasks-list-view">
+            {tasks.map((task) => (
+              <div key={task.id || task._id} className="task-list-item">
+                <div className="task-item-left">
+                  <div className="task-item-header">
+                    <h4 className="task-item-title">{task.title}</h4>
+                    {task.description && (
+                      <p className="task-item-description">{task.description}</p>
+                    )}
+                  </div>
                 </div>
 
-                <div className="tasks-list">
-                  {tasksByStatus[status].map((task) => (
-                    <div key={task.id || task._id} className="task-card">
-                      <div className="task-header">
-                        <h4 className="task-title">{task.title}</h4>
-                        <div className="task-actions">
-                          <button
-                            className="btn-icon"
-                            onClick={() => handleEdit(task)}
-                            title="Edit"
-                          >
-                            ✏️
-                          </button>
-                          <button
-                            className="btn-icon btn-icon--danger"
-                            onClick={() => handleDelete(task.id || task._id)}
-                            title="Delete"
-                          >
-                            🗑️
-                          </button>
-                        </div>
-                      </div>
+                <div className="task-item-middle">
+                  <select
+                    className="task-status-select"
+                    value={task.status || "todo"}
+                    onChange={(e) => handleStatusChange(task.id || task._id, e.target.value)}
+                    title="Change status"
+                  >
+                    {TASK_STATUSES.map((st) => (
+                      <option key={st} value={st}>
+                        {formatStatus(st)}
+                      </option>
+                    ))}
+                  </select>
 
-                      {task.description && (
-                        <p className="task-description">{task.description}</p>
-                      )}
+                  <div className={`task-priority ${getPriorityClass(task.priority)}`}>
+                    {formatPriority(task.priority)}
+                  </div>
 
-                      <div className="task-meta">
-                        <select
-                          className="task-status-select"
-                          value={task.status || "todo"}
-                          onChange={(e) => handleStatusChange(task.id || task._id, e.target.value)}
-                          title="Change status"
-                        >
-                          {TASK_STATUSES.map((st) => (
-                            <option key={st} value={st}>
-                              {formatStatus(st)}
-                            </option>
-                          ))}
-                        </select>
-                        <span
-                          className="task-priority"
-                          style={{ backgroundColor: getPriorityColor(task.priority) }}
-                        >
-                          {task.priority || "Medium"}
-                        </span>
-                        {task.createdAt && (
-                          <small className="task-date">
-                            {new Date(task.createdAt).toLocaleDateString()}
-                          </small>
-                        )}
-                      </div>
-                    </div>
-                  ))}
+                  {task.createdAt && (
+                    <small className="task-date">
+                      {new Date(task.createdAt).toLocaleDateString()}
+                    </small>
+                  )}
+                </div>
+
+                <div className="task-item-actions">
+                  <button
+                    className="btn-icon"
+                    onClick={() => handleEdit(task)}
+                    title="Edit"
+                  >
+                    ✏️
+                  </button>
+                  <button
+                    className="btn-icon btn-icon--danger"
+                    onClick={() => handleDelete(task.id || task._id)}
+                    title="Delete"
+                  >
+                    🗑️
+                  </button>
                 </div>
               </div>
             ))}
