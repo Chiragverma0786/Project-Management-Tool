@@ -46,11 +46,9 @@ const Tasks = () => {
       setLoading(true);
       setError("");
 
-      // Fetch project details
       const projectResponse = await getProjectById(projectId);
       setProject(projectResponse.data.project || projectResponse.data);
 
-      // Fetch tasks for this project
       const tasksResponse = await getTasks(projectId);
       setTasks(tasksResponse.data.tasks || tasksResponse.data || []);
     } catch (err) {
