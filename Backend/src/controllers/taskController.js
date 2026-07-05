@@ -4,7 +4,7 @@ const AppError = require("../utils/AppError");
 
 exports.createTask = async (req, res, next) => {
   try {
-    const { title, description, status, projectId } = req.body;
+    const { title, description, status, projectId, priority } = req.body;
 
     if (!title || !projectId) {
       throw new AppError("Task title and projectId are required", 400);
@@ -23,6 +23,7 @@ exports.createTask = async (req, res, next) => {
       title,
       description,
       status: status || "pending",
+      priority, 
       project_id: projectId,
       user_id: req.user._id,
     });
@@ -77,11 +78,11 @@ exports.getTaskById = async (req, res, next) => {
 
 exports.updateTask = async (req, res, next) => {
   try {
-    const { title, description, status } = req.body;
+    const { title, description, status, priority } = req.body;
 
     const task = await Task.findOneAndUpdate(
       { _id: req.params.id, user_id: req.user._id },
-      { title, description, status },
+      { title, description, status, priority },
       { new: true, runValidators: true }
     );
 
