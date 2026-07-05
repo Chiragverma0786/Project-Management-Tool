@@ -3,6 +3,8 @@
 
 # Environment files
 **/.env
+**/.env.production
+**/.env.development
 
 # Build folders
 frontend/dist
